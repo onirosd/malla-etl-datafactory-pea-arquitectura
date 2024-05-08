@@ -1,0 +1,63 @@
+{
+	"name": "DF_CLEAN_TARJETA",
+	"properties": {
+		"folder": {
+			"name": "plata"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DataRawInputTarjeta",
+						"type": "DatasetReference"
+					},
+					"name": "rawTarjeta"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DataCleanOutputTarjeta",
+						"type": "DatasetReference"
+					},
+					"name": "cleanTarjeta"
+				}
+			],
+			"transformations": [
+				{
+					"name": "insertbkTarjeta"
+				},
+				{
+					"name": "selectTarjeta"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          cTarjeta as string,",
+				"          Nombre as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     format: 'parquet') ~> rawTarjeta",
+				"rawTarjeta derive(bk_mediopago = trim(cTarjeta)) ~> insertbkTarjeta",
+				"insertbkTarjeta select(mapColumn(",
+				"          bk_mediopago,",
+				"          des_mediopago = Nombre",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> selectTarjeta",
+				"selectTarjeta sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'parquet',",
+				"     truncate: true,",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> cleanTarjeta"
+			]
+		}
+	}
+}

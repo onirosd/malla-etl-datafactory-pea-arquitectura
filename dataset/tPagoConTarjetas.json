@@ -1,0 +1,48 @@
+{
+	"name": "tPagoConTarjetas",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDatabase",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "bronce/input datasets/sources databases"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "tipo",
+				"type": "varchar"
+			},
+			{
+				"name": "nfactura",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "cTarjeta",
+				"type": "varchar"
+			},
+			{
+				"name": "nTarjeta",
+				"type": "varchar"
+			},
+			{
+				"name": "monto",
+				"type": "decimal",
+				"precision": 9,
+				"scale": 2
+			},
+			{
+				"name": "idprm",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "tPagoConTarjetas"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

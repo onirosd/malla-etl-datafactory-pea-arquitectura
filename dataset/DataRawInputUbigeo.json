@@ -1,0 +1,53 @@
+{
+	"name": "DataRawInputUbigeo",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureDataLakeStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "plata/input datasets"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "raw_ubigeo",
+				"fileSystem": "capabronce"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": [
+			{
+				"name": "IDDIST",
+				"type": "UTF8"
+			},
+			{
+				"name": "NOMBDEP",
+				"type": "UTF8"
+			},
+			{
+				"name": "NOMBPROV",
+				"type": "UTF8"
+			},
+			{
+				"name": "NOMBDIST",
+				"type": "UTF8"
+			},
+			{
+				"name": "NOMCAPITAL",
+				"type": "UTF8"
+			},
+			{
+				"name": "CODREGNAT",
+				"type": "UTF8"
+			},
+			{
+				"name": "REGIONNATURAL",
+				"type": "UTF8"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

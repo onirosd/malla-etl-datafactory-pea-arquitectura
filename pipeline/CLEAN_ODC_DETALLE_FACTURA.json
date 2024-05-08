@@ -1,0 +1,33 @@
+{
+	"name": "CLEAN_ODC_DETALLE_FACTURA",
+	"properties": {
+		"activities": [
+			{
+				"name": "CLEAN ODC DETALLE FACTURA",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Users/pda3dhurtado@dmclatam.onmicrosoft.com/CAPA PLATA/load_data_odc_facturas_detalles"
+				},
+				"linkedServiceName": {
+					"referenceName": "AzureDatabricksDM2",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"folder": {
+			"name": "plata"
+		},
+		"annotations": [],
+		"lastPublishTime": "2024-05-05T03:46:33Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

@@ -1,0 +1,274 @@
+{
+	"name": "malla_oro",
+	"properties": {
+		"activities": [
+			{
+				"name": "dim_almacen",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Users/pda3dhurtado@dmclatam.onmicrosoft.com/CAPA ORO/load_data_dim_almacen"
+				},
+				"linkedServiceName": {
+					"referenceName": "AzureDatabricksDM2",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "dim_articulo",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Users/pda3dhurtado@dmclatam.onmicrosoft.com/CAPA ORO/load_data_dim_articulo"
+				},
+				"linkedServiceName": {
+					"referenceName": "AzureDatabricksDM2",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "dim_cliente",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Users/pda3dhurtado@dmclatam.onmicrosoft.com/CAPA ORO/load_data_dim_cliente"
+				},
+				"linkedServiceName": {
+					"referenceName": "AzureDatabricksDM2",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "dim_empleado",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "dim_almacen",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Users/pda3dhurtado@dmclatam.onmicrosoft.com/CAPA ORO/load_data_dim_empleado"
+				},
+				"linkedServiceName": {
+					"referenceName": "AzureDatabricksDM2",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "dim_mediopago",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "dim_articulo",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Users/pda3dhurtado@dmclatam.onmicrosoft.com/CAPA ORO/load_data_dim_mediopago"
+				},
+				"linkedServiceName": {
+					"referenceName": "AzureDatabricksDM2",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "dim_moneda",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "dim_cliente",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Users/pda3dhurtado@dmclatam.onmicrosoft.com/CAPA ORO/load_data_dim_moneda"
+				},
+				"linkedServiceName": {
+					"referenceName": "AzureDatabricksDM2",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "dim_puntoventa",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "dim_empleado",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Users/pda3dhurtado@dmclatam.onmicrosoft.com/CAPA ORO/load_data_dim_puntoventa"
+				},
+				"linkedServiceName": {
+					"referenceName": "AzureDatabricksDM2",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "dim_tipodocumentos",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "dim_mediopago",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Users/pda3dhurtado@dmclatam.onmicrosoft.com/CAPA ORO/load_data_dim_tipodocumentos"
+				},
+				"linkedServiceName": {
+					"referenceName": "AzureDatabricksDM2",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "dim_ubigeo",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "dim_moneda",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Users/pda3dhurtado@dmclatam.onmicrosoft.com/CAPA ORO/load_data_dim_ubigeo"
+				},
+				"linkedServiceName": {
+					"referenceName": "AzureDatabricksDM2",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "fac_facturas",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "dim_puntoventa",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "dim_tipodocumentos",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "dim_ubigeo",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Users/pda3dhurtado@dmclatam.onmicrosoft.com/CAPA ORO/load_data_fact_ventagenerales"
+				},
+				"linkedServiceName": {
+					"referenceName": "AzureDatabricksDM2",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"folder": {
+			"name": "malla"
+		},
+		"annotations": [],
+		"lastPublishTime": "2024-05-06T04:36:37Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

@@ -1,0 +1,54 @@
+{
+	"name": "tAlmacen",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDatabase",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "bronce/input datasets/sources databases"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "nombrepc",
+				"type": "varchar"
+			},
+			{
+				"name": "usuariopc",
+				"type": "varchar"
+			},
+			{
+				"name": "ippc",
+				"type": "varchar"
+			},
+			{
+				"name": "cempresa",
+				"type": "varchar"
+			},
+			{
+				"name": "code",
+				"type": "varchar"
+			},
+			{
+				"name": "calmacen",
+				"type": "varchar"
+			},
+			{
+				"name": "caja",
+				"type": "varchar"
+			},
+			{
+				"name": "activo",
+				"type": "int",
+				"precision": 10
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "tusertsrvw"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,73 @@
+{
+	"name": "DF_CLEAN_UBIGEO",
+	"properties": {
+		"folder": {
+			"name": "plata"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DataRawInputUbigeo",
+						"type": "DatasetReference"
+					},
+					"name": "rawUbigeo"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DataCleanOutputUbigeo",
+						"type": "DatasetReference"
+					},
+					"name": "cleanUbigeo"
+				}
+			],
+			"transformations": [
+				{
+					"name": "insertbkUbigeo"
+				},
+				{
+					"name": "selectUbigeo"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          IDDIST as string,",
+				"          NOMBDEP as string,",
+				"          NOMBPROV as string,",
+				"          NOMBDIST as string,",
+				"          NOMCAPITAL as string,",
+				"          CODREGNAT as string,",
+				"          REGIONNATURAL as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     format: 'parquet') ~> rawUbigeo",
+				"rawUbigeo derive(bk_ubigeo = trim(IDDIST)) ~> insertbkUbigeo",
+				"insertbkUbigeo select(mapColumn(",
+				"          bk_ubigeo,",
+				"          NOMBDEP,",
+				"          NOMBPROV,",
+				"          NOMBDIST,",
+				"          NOMCAPITAL,",
+				"          CODREGNAT,",
+				"          REGIONNATURAL",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> selectUbigeo",
+				"selectUbigeo sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'parquet',",
+				"     truncate: true,",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> cleanUbigeo"
+			]
+		}
+	}
+}

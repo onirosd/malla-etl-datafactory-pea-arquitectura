@@ -1,0 +1,81 @@
+{
+	"name": "tvtaDetalle",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDatabase",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "bronce/input datasets/sources databases"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "Tipo",
+				"type": "char"
+			},
+			{
+				"name": "nFactura",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "CodArticulo",
+				"type": "varchar"
+			},
+			{
+				"name": "Linea",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Descripcion",
+				"type": "char"
+			},
+			{
+				"name": "Cantidad",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "PUnitario",
+				"type": "decimal",
+				"precision": 8,
+				"scale": 2
+			},
+			{
+				"name": "ValorVenta",
+				"type": "decimal",
+				"precision": 8,
+				"scale": 2
+			},
+			{
+				"name": "cAlmacen",
+				"type": "varchar"
+			},
+			{
+				"name": "Caja",
+				"type": "char"
+			},
+			{
+				"name": "Cant_nc",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "lineaprocedencia",
+				"type": "char"
+			},
+			{
+				"name": "idprm",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "tvtaDetalle"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

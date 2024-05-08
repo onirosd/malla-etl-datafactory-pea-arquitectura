@@ -1,0 +1,52 @@
+{
+	"name": "tCliente",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDatabase",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "bronce/input datasets/sources databases"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "RUC",
+				"type": "varchar"
+			},
+			{
+				"name": "Nombre",
+				"type": "varchar"
+			},
+			{
+				"name": "Direccion",
+				"type": "varchar"
+			},
+			{
+				"name": "Telefono",
+				"type": "varchar"
+			},
+			{
+				"name": "fecnac",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "asesor",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "ccliente",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "tCLiente"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

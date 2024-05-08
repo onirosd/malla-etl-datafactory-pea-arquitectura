@@ -1,0 +1,137 @@
+{
+	"name": "DataRawInputArticulo2",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureDataLakeStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "plata/input datasets"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "raw_ttarticulo",
+				"fileSystem": "capabronce"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": [
+			{
+				"name": "Codarticulo",
+				"type": "UTF8"
+			},
+			{
+				"name": "Proveedor",
+				"type": "UTF8"
+			},
+			{
+				"name": "Modelo",
+				"type": "UTF8"
+			},
+			{
+				"name": "Linea",
+				"type": "UTF8"
+			},
+			{
+				"name": "cMaterial",
+				"type": "UTF8"
+			},
+			{
+				"name": "color",
+				"type": "UTF8"
+			},
+			{
+				"name": "Talla",
+				"type": "UTF8"
+			},
+			{
+				"name": "cTaco",
+				"type": "UTF8"
+			},
+			{
+				"name": "cmC",
+				"type": "UTF8"
+			},
+			{
+				"name": "cmV",
+				"type": "UTF8"
+			},
+			{
+				"name": "Descripcion",
+				"type": "UTF8"
+			},
+			{
+				"name": "Unidad",
+				"type": "UTF8"
+			},
+			{
+				"name": "Stock",
+				"type": "INT32"
+			},
+			{
+				"name": "StockMin",
+				"type": "INT32"
+			},
+			{
+				"name": "StockMax",
+				"type": "INT32"
+			},
+			{
+				"name": "CostoPromedio",
+				"type": "INT32"
+			},
+			{
+				"name": "Costo",
+				"type": "INT32"
+			},
+			{
+				"name": "CodPais",
+				"type": "INT32"
+			},
+			{
+				"name": "CodUbigeo",
+				"type": "INT32"
+			},
+			{
+				"name": "Exento",
+				"type": "INT32"
+			},
+			{
+				"name": "Tipo",
+				"type": "INT32"
+			},
+			{
+				"name": "CodTemporada",
+				"type": "INT32"
+			},
+			{
+				"name": "Flag",
+				"type": "INT32"
+			},
+			{
+				"name": "EstadoNuevo",
+				"type": "INT32"
+			},
+			{
+				"name": "Angurriento",
+				"type": "INT32"
+			},
+			{
+				"name": "flag1",
+				"type": "INT32"
+			},
+			{
+				"name": "cAnno",
+				"type": "INT32"
+			},
+			{
+				"name": "CodInterno",
+				"type": "UTF8"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

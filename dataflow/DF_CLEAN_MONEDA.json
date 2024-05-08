@@ -1,0 +1,63 @@
+{
+	"name": "DF_CLEAN_MONEDA",
+	"properties": {
+		"folder": {
+			"name": "plata"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DataRowInputMoneda2",
+						"type": "DatasetReference"
+					},
+					"name": "rawMoneda"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DataCleanOutputMoneda",
+						"type": "DatasetReference"
+					},
+					"name": "cleanMoneda"
+				}
+			],
+			"transformations": [
+				{
+					"name": "insertbkMoneda"
+				},
+				{
+					"name": "selectMoneda"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          cMoneda as string,",
+				"          Descripcion as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     format: 'parquet') ~> rawMoneda",
+				"rawMoneda derive(bk_moneda = trim(cMoneda)) ~> insertbkMoneda",
+				"insertbkMoneda select(mapColumn(",
+				"          bk_moneda,",
+				"          Descripcion",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> selectMoneda",
+				"selectMoneda sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'parquet',",
+				"     truncate: true,",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> cleanMoneda"
+			]
+		}
+	}
+}

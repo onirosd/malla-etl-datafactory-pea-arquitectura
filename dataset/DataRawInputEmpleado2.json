@@ -1,0 +1,61 @@
+{
+	"name": "DataRawInputEmpleado2",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureDataLakeStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "plata/input datasets"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "raw_templeado",
+				"fileSystem": "capabronce"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": [
+			{
+				"name": "codemp",
+				"type": "UTF8"
+			},
+			{
+				"name": "nombre",
+				"type": "UTF8"
+			},
+			{
+				"name": "apellidomat",
+				"type": "UTF8"
+			},
+			{
+				"name": "apellidopat",
+				"type": "UTF8"
+			},
+			{
+				"name": "cvendedor",
+				"type": "UTF8"
+			},
+			{
+				"name": "dni",
+				"type": "UTF8"
+			},
+			{
+				"name": "mostrar",
+				"type": "UTF8"
+			},
+			{
+				"name": "cempresa",
+				"type": "UTF8"
+			},
+			{
+				"name": "Lactancia",
+				"type": "UTF8"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

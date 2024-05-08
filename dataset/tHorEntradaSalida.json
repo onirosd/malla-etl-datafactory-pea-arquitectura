@@ -1,0 +1,63 @@
+{
+	"name": "tHorEntradaSalida",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDatabase",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "bronce/input datasets/sources databases"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "CodEmpresa",
+				"type": "varchar"
+			},
+			{
+				"name": "CodLocal",
+				"type": "varchar"
+			},
+			{
+				"name": "CodEmpleado",
+				"type": "varchar"
+			},
+			{
+				"name": "Secuencial",
+				"type": "varchar"
+			},
+			{
+				"name": "Fecha",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "HorIngreso",
+				"type": "varchar"
+			},
+			{
+				"name": "HorSalidaR",
+				"type": "varchar"
+			},
+			{
+				"name": "HorIngresoR",
+				"type": "varchar"
+			},
+			{
+				"name": "HorSalida",
+				"type": "varchar"
+			},
+			{
+				"name": "FApoyo",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "HorEntradaSalida"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

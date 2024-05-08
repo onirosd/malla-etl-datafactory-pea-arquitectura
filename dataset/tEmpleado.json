@@ -1,0 +1,57 @@
+{
+	"name": "tEmpleado",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDatabase",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "bronce/input datasets/sources databases"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "codemp",
+				"type": "varchar"
+			},
+			{
+				"name": "nombre",
+				"type": "varchar"
+			},
+			{
+				"name": "apellidomat",
+				"type": "varchar"
+			},
+			{
+				"name": "apellidopat",
+				"type": "varchar"
+			},
+			{
+				"name": "cvendedor",
+				"type": "varchar"
+			},
+			{
+				"name": "dni",
+				"type": "varchar"
+			},
+			{
+				"name": "mostrar",
+				"type": "varchar"
+			},
+			{
+				"name": "cempresa",
+				"type": "varchar"
+			},
+			{
+				"name": "Lactancia",
+				"type": "char"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "tEmpleado"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

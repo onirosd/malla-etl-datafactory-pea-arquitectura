@@ -1,0 +1,148 @@
+{
+	"name": "tArticulo",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDatabase",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "bronce/input datasets/sources databases"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "Codarticulo",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Proveedor",
+				"type": "varchar"
+			},
+			{
+				"name": "Modelo",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Linea",
+				"type": "nvarchar"
+			},
+			{
+				"name": "cMaterial",
+				"type": "varchar"
+			},
+			{
+				"name": "color",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Talla",
+				"type": "varchar"
+			},
+			{
+				"name": "cTaco",
+				"type": "varchar"
+			},
+			{
+				"name": "cmC",
+				"type": "varchar"
+			},
+			{
+				"name": "cmV",
+				"type": "varchar"
+			},
+			{
+				"name": "Descripcion",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Unidad",
+				"type": "varchar"
+			},
+			{
+				"name": "Stock",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "StockMin",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "StockMax",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "CostoPromedio",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Costo",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "CodPais",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "CodUbigeo",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Exento",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Tipo",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "CodTemporada",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Flag",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "EstadoNuevo",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Angurriento",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "flag1",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "cAnno",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "CodInterno",
+				"type": "nvarchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "tArticuloT"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

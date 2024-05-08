@@ -1,0 +1,393 @@
+{
+	"name": "malla_bronce",
+	"properties": {
+		"activities": [
+			{
+				"name": "RAW_TMONEDA",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Set variable1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "ETL_RAW_TMONEDA",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "RAW_TTARJETA",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Set variable1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "ETL_RAW_TTARJETA",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "RAW_TLOCAL",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Set variable1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "ETL_RAW_TLOCAL",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "RAW_TTIPODOCUMENTO",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Set variable1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "ETL_RAW_TTIPODOCUMENTO",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "ETL_RAW_TFACTURA",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "RAW_TMONEDA",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "RAW_TTARJETA",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "RAW_TLOCAL",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "RAW_TTIPODOCUMENTO",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "ETL_RAW_TFACTURA",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"fechaEjecucion": {
+							"value": "@variables('fechaProceso')",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "RAW_UBIGEO",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "ETL_RAW_TFACTURA",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "ETL_RAW_UBIGEO",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "RAW_TALMACEN",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "ETL_RAW_TFACTURA",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "ETL_RAW_TALMACEN",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "RAW_PAGOCONTARJETA",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "ETL_RAW_TFACTURA",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "ETL_RAW_PAGOCONTARJETA",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "RAW_TARTICULO",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "RAW_TVTA_DETALLE",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "ETL_RAW_TARTICULO",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "RAW_EMPLEADO",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "ETL_RAW_TFACTURA",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "ETL_RAW_EMPLEADO",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "RAW_TVTA_DETALLE",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "RAW_UBIGEO",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "RAW_TALMACEN",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "RAW_PAGOCONTARJETA",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "RAW_EMPLEADO",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "ETL_RAW_TVTADETALLE",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"fechaEjecucion": {
+							"value": "@variables('fechaProceso')",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "RAW_HORENTRADASALIDA",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "RAW_TVTA_DETALLE",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "ETL_RAW_HORENTRADASALIDA",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"fechaEjecucion": {
+							"value": "@variables('fechaProceso')",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "RAW_TCLIENTE",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "RAW_TVTA_DETALLE",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "ETL_RAW_TCLIENTE",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "Set variable1",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "fechaProceso",
+					"value": {
+						"value": "@pipeline().parameters.fechaEjecucionMalla",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"parameters": {
+			"fechaEjecucionMalla": {
+				"type": "string"
+			}
+		},
+		"variables": {
+			"fechaProceso": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "malla"
+		},
+		"annotations": [],
+		"lastPublishTime": "2024-04-22T13:49:09Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

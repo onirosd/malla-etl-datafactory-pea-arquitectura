@@ -1,0 +1,105 @@
+{
+	"name": "ETL_RAW_TVTADETALLE",
+	"properties": {
+		"activities": [
+			{
+				"name": "copiar datos de VTADETALLE",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Eliminamos previa insercion",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": {
+							"value": "SELECT a.* \nFROM tvtaDetalle a\nINNER JOIN tFactura b on a.nFactura = b.nFactura and a.idprm = b.idprm\nwhere b.Fecha = '@{pipeline().parameters.fechaEjecucion}'",
+							"type": "Expression"
+						},
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "ParquetSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "ParquetWriteSettings"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "tvtaDetalle",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DataSetVentaDetalle",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "Eliminamos previa insercion",
+				"type": "Delete",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "DataSetVentaDetalle",
+						"type": "DatasetReference"
+					},
+					"enableLogging": false,
+					"storeSettings": {
+						"type": "AzureBlobFSReadSettings",
+						"recursive": true,
+						"enablePartitionDiscovery": false
+					}
+				}
+			}
+		],
+		"parameters": {
+			"fechaEjecucion": {
+				"type": "string",
+				"defaultValue": "2010-01-01"
+			}
+		},
+		"folder": {
+			"name": "bronce"
+		},
+		"annotations": [],
+		"lastPublishTime": "2024-04-24T15:29:42Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

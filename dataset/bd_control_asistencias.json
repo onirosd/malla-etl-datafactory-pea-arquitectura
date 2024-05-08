@@ -1,0 +1,33 @@
+{
+	"name": "bd_control_asistencias",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureDataLakeStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "bronce/input datasets/sources files"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "CSV DE REGISTRO DE INGRESOS Y SALIDAS.csv",
+				"folderPath": "sistema-control-horas",
+				"fileSystem": "sources"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "002;05;07524141;NULL;2015-04-10 00:00:00.000;10:54:45;NULL;NULL;22:07:45;V",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

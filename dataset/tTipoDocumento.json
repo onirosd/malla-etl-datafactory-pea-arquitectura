@@ -1,0 +1,41 @@
+{
+	"name": "tTipoDocumento",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDatabase",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "bronce/input datasets/sources databases"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "Tipo",
+				"type": "char"
+			},
+			{
+				"name": "Descripcion",
+				"type": "char"
+			},
+			{
+				"name": "DescLarga",
+				"type": "varchar"
+			},
+			{
+				"name": "Modulo",
+				"type": "char"
+			},
+			{
+				"name": "F",
+				"type": "char"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "tTipoDocumento"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

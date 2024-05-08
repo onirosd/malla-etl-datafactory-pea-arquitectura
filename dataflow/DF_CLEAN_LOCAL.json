@@ -1,0 +1,66 @@
+{
+	"name": "DF_CLEAN_LOCAL",
+	"properties": {
+		"folder": {
+			"name": "plata"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DataRawInputLocal3",
+						"type": "DatasetReference"
+					},
+					"name": "rawLocal"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DataCleanOutputLocal",
+						"type": "DatasetReference"
+					},
+					"name": "cleanLocal"
+				}
+			],
+			"transformations": [
+				{
+					"name": "insertbkLocal"
+				},
+				{
+					"name": "selectLocal"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          nLocal as string,",
+				"          Descripcion as string,",
+				"          BackTda as string,",
+				"          codubigeo as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     format: 'parquet') ~> rawLocal",
+				"rawLocal derive(bk_local = trim(nLocal)) ~> insertbkLocal",
+				"insertbkLocal select(mapColumn(",
+				"          bk_local,",
+				"          des_local = Descripcion,",
+				"          cod_ubigeo = codubigeo",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> selectLocal",
+				"selectLocal sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'parquet',",
+				"     truncate: true,",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> cleanLocal"
+			]
+		}
+	}
+}

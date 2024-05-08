@@ -1,0 +1,35 @@
+{
+	"name": "tMallaEjecuciones",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDatabase",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "bronce/input datasets/source mallas"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "fechaEjecucion",
+				"type": "varchar"
+			},
+			{
+				"name": "estado",
+				"type": "int",
+				"precision": 10
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "tMallaEjecuciones"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

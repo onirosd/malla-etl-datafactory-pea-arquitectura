@@ -1,0 +1,57 @@
+{
+	"name": "TUbigeo",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureDataLakeStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "bronce/input datasets/sources databases"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "UBIGEO 2022_1891 distritos.csv",
+				"folderPath": "sistema-reniec",
+				"fileSystem": "sources"
+			},
+			"columnDelimiter": ";",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "IDDIST",
+				"type": "String"
+			},
+			{
+				"name": "NOMBDEP",
+				"type": "String"
+			},
+			{
+				"name": "NOMBPROV",
+				"type": "String"
+			},
+			{
+				"name": "NOMBDIST",
+				"type": "String"
+			},
+			{
+				"name": "NOMCAPITAL",
+				"type": "String"
+			},
+			{
+				"name": "CODREGNAT",
+				"type": "String"
+			},
+			{
+				"name": "REGIONNATURAL",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

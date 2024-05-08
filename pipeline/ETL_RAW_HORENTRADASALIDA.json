@@ -1,0 +1,104 @@
+{
+	"name": "ETL_RAW_HORENTRADASALIDA",
+	"properties": {
+		"activities": [
+			{
+				"name": "copiar datos de HORENTRADASALIDA",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Eliminamos previa insercion",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": {
+							"value": "select * from HorEntradaSalida where Fecha = '@{pipeline().parameters.fechaEjecucion}'",
+							"type": "Expression"
+						},
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "ParquetSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "ParquetWriteSettings"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "tHorEntradaSalida",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DataSetHorEntradaSalida",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "Eliminamos previa insercion",
+				"type": "Delete",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "DataSetHorEntradaSalida",
+						"type": "DatasetReference"
+					},
+					"enableLogging": false,
+					"storeSettings": {
+						"type": "AzureBlobFSReadSettings",
+						"recursive": true,
+						"enablePartitionDiscovery": false
+					}
+				}
+			}
+		],
+		"parameters": {
+			"fechaEjecucion": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "bronce"
+		},
+		"annotations": [],
+		"lastPublishTime": "2024-04-24T15:29:42Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

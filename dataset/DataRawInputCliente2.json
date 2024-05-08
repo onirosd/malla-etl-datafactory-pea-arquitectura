@@ -1,0 +1,53 @@
+{
+	"name": "DataRawInputCliente2",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureDataLakeStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "plata/input datasets"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "raw_tcliente",
+				"fileSystem": "capabronce"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": [
+			{
+				"name": "RUC",
+				"type": "UTF8"
+			},
+			{
+				"name": "Nombre",
+				"type": "UTF8"
+			},
+			{
+				"name": "Direccion",
+				"type": "UTF8"
+			},
+			{
+				"name": "Telefono",
+				"type": "UTF8"
+			},
+			{
+				"name": "fecnac",
+				"type": "INT96"
+			},
+			{
+				"name": "asesor",
+				"type": "INT32"
+			},
+			{
+				"name": "ccliente",
+				"type": "UTF8"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

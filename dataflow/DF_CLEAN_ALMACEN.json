@@ -1,0 +1,69 @@
+{
+	"name": "DF_CLEAN_ALMACEN",
+	"properties": {
+		"folder": {
+			"name": "plata"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DataRawInputAlmacen2",
+						"type": "DatasetReference"
+					},
+					"name": "rawAlmacen"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DataCleanOutputAlmacen",
+						"type": "DatasetReference"
+					},
+					"name": "cleanAlmacen"
+				}
+			],
+			"transformations": [
+				{
+					"name": "insertbkAlmacen"
+				},
+				{
+					"name": "selectAlmacen"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          nombrepc as string,",
+				"          usuariopc as string,",
+				"          ippc as string,",
+				"          cempresa as string,",
+				"          code as string,",
+				"          calmacen as string,",
+				"          caja as string,",
+				"          activo as integer",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     format: 'parquet') ~> rawAlmacen",
+				"rawAlmacen derive(bk_almacen = trim(caja)) ~> insertbkAlmacen",
+				"insertbkAlmacen select(mapColumn(",
+				"          bk_almacen,",
+				"          des_almacen = calmacen",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> selectAlmacen",
+				"selectAlmacen sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'parquet',",
+				"     truncate: true,",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> cleanAlmacen"
+			]
+		}
+	}
+}

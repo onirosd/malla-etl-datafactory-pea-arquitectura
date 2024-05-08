@@ -1,0 +1,45 @@
+{
+	"name": "DataRawInputTipoDocumento",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureDataLakeStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "plata/input datasets"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "raw_ttipodocumento",
+				"fileSystem": "capabronce"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": [
+			{
+				"name": "Tipo",
+				"type": "UTF8"
+			},
+			{
+				"name": "Descripcion",
+				"type": "UTF8"
+			},
+			{
+				"name": "DescLarga",
+				"type": "UTF8"
+			},
+			{
+				"name": "Modulo",
+				"type": "UTF8"
+			},
+			{
+				"name": "F",
+				"type": "UTF8"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,29 @@
+{
+	"name": "tMoneda",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDatabase",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "bronce/input datasets/sources databases"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "cMoneda",
+				"type": "char"
+			},
+			{
+				"name": "Descripcion",
+				"type": "char"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "tMoneda"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

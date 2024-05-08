@@ -1,0 +1,216 @@
+{
+	"name": "tFactura",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDatabase",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "bronce/input datasets/sources databases"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "Tipo",
+				"type": "varchar"
+			},
+			{
+				"name": "cCliente",
+				"type": "varchar"
+			},
+			{
+				"name": "nFactura",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "cMoneda",
+				"type": "char"
+			},
+			{
+				"name": "Fecha",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "Estado",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Paridad",
+				"type": "decimal",
+				"precision": 10,
+				"scale": 3
+			},
+			{
+				"name": "SubTotal",
+				"type": "decimal",
+				"precision": 8,
+				"scale": 2
+			},
+			{
+				"name": "IGV",
+				"type": "decimal",
+				"precision": 8,
+				"scale": 2
+			},
+			{
+				"name": "Total",
+				"type": "decimal",
+				"precision": 8,
+				"scale": 2
+			},
+			{
+				"name": "Referencia",
+				"type": "char"
+			},
+			{
+				"name": "CodVendedor",
+				"type": "varchar"
+			},
+			{
+				"name": "CodOperador",
+				"type": "char"
+			},
+			{
+				"name": "Vencimiento",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "Recargo",
+				"type": "decimal",
+				"precision": 8,
+				"scale": 2
+			},
+			{
+				"name": "Descuento",
+				"type": "decimal",
+				"precision": 8,
+				"scale": 2
+			},
+			{
+				"name": "Exonerado",
+				"type": "decimal",
+				"precision": 18,
+				"scale": 3
+			},
+			{
+				"name": "cAlmacen",
+				"type": "varchar"
+			},
+			{
+				"name": "nLista",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Hora",
+				"type": "char"
+			},
+			{
+				"name": "ES",
+				"type": "decimal",
+				"precision": 18,
+				"scale": 3
+			},
+			{
+				"name": "ED",
+				"type": "decimal",
+				"precision": 18,
+				"scale": 3
+			},
+			{
+				"name": "TS",
+				"type": "decimal",
+				"precision": 18,
+				"scale": 3
+			},
+			{
+				"name": "TD",
+				"type": "decimal",
+				"precision": 18,
+				"scale": 3
+			},
+			{
+				"name": "TipoTarjeta",
+				"type": "varchar"
+			},
+			{
+				"name": "nTarjeta",
+				"type": "varchar"
+			},
+			{
+				"name": "VS",
+				"type": "decimal",
+				"precision": 18,
+				"scale": 3
+			},
+			{
+				"name": "VD",
+				"type": "decimal",
+				"precision": 18,
+				"scale": 3
+			},
+			{
+				"name": "Caja",
+				"type": "char"
+			},
+			{
+				"name": "CierreZ",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "FechaZ",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "cColegio",
+				"type": "char"
+			},
+			{
+				"name": "RUC",
+				"type": "varchar"
+			},
+			{
+				"name": "Seriereferencia",
+				"type": "varchar"
+			},
+			{
+				"name": "Tiporeferencia",
+				"type": "varchar"
+			},
+			{
+				"name": "Numreferencia",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "ENC",
+				"type": "decimal",
+				"precision": 18,
+				"scale": 3
+			},
+			{
+				"name": "DNI",
+				"type": "char"
+			},
+			{
+				"name": "idprm",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "tFactura"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}
