@@ -1,0 +1,2543 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Nombre de instancia de Data Factory",
+			"defaultValue": "adfm2prod"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/ETL_RAW_TCLIENTE')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "copiar datos de CLIENTE",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "Eliminamos previa insercion",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"sink": {
+								"type": "ParquetSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "ParquetWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "tCliente",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DataSetTcliente",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "Eliminamos previa insercion",
+						"type": "Delete",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "DataSetTcliente",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"enableLogging": false,
+							"storeSettings": {
+								"type": "AzureBlobFSReadSettings",
+								"recursive": true,
+								"enablePartitionDiscovery": false
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "bronce"
+				},
+				"annotations": [],
+				"lastPublishTime": "2024-04-24T15:29:42Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ETL_RAW_TFACTURA')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "copiar datos de TFACTURA",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "Eliminamos previa insercion",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderQuery": {
+									"value": "SELECT * FROM dbo.tfactura WHERE Fecha = '@{pipeline().parameters.fechaEjecucion}'",
+									"type": "Expression"
+								},
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"sink": {
+								"type": "ParquetSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "ParquetWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "tFactura",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DataSettFactura",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "Eliminamos previa insercion",
+						"type": "Delete",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "DataSettFactura",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"enableLogging": false,
+							"storeSettings": {
+								"type": "AzureBlobFSReadSettings",
+								"recursive": true,
+								"enablePartitionDiscovery": false
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"fechaEjecucion": {
+						"type": "string",
+						"defaultValue": "2010-01-01"
+					}
+				},
+				"folder": {
+					"name": "bronce"
+				},
+				"annotations": [],
+				"lastPublishTime": "2024-04-24T15:29:42Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ETL_RAW_TFACTURA_CARGA_HISTORICA')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "copiar datos de TFACTURA",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "Eliminamos previa insercion",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderQuery": {
+									"value": "select * from dbo.tfactura where Fecha >= '2013-01-01' and Fecha <= '2014-12-31'",
+									"type": "Expression"
+								},
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"sink": {
+								"type": "ParquetSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "ParquetWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "tFactura",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DataSettFactura",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "Eliminamos previa insercion",
+						"type": "Delete",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "DataSettFactura",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"enableLogging": false,
+							"storeSettings": {
+								"type": "AzureBlobFSReadSettings",
+								"recursive": true,
+								"enablePartitionDiscovery": false
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "bronce"
+				},
+				"annotations": [],
+				"lastPublishTime": "2024-05-06T04:36:37Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ETL_RAW_TLOCAL')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "copiar datos de TLOCAL",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "Eliminamos previa insercion",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [
+							{
+								"name": "Source",
+								"value": "dbo.tLocal"
+							},
+							{
+								"name": "Destination",
+								"value": "capabronce/raw_tlocal/"
+							}
+						],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderQuery": "select TOP 1000 * from tLocal",
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"sink": {
+								"type": "ParquetSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "ParquetWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "tLocal",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DataSettLocal",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "Eliminamos previa insercion",
+						"type": "Delete",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "DataSettLocal",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"enableLogging": false,
+							"storeSettings": {
+								"type": "AzureBlobFSReadSettings",
+								"recursive": true,
+								"enablePartitionDiscovery": false
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "bronce"
+				},
+				"annotations": [],
+				"lastPublishTime": "2024-05-05T03:46:33Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ETL_RAW_TMONEDA')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "copiar datos de TMONEDA",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "Eliminamos previa insercion",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"queryTimeout": "02:00:00",
+								"isolationLevel": "ReadCommitted",
+								"partitionOption": "None"
+							},
+							"sink": {
+								"type": "ParquetSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "ParquetWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "tMoneda",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DataSetTmoneda",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "Eliminamos previa insercion",
+						"type": "Delete",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "DataSetTmoneda",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"enableLogging": false,
+							"storeSettings": {
+								"type": "AzureBlobFSReadSettings",
+								"recursive": true,
+								"enablePartitionDiscovery": false
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "bronce"
+				},
+				"annotations": [],
+				"lastPublishTime": "2024-04-24T15:29:42Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ETL_RAW_TTARJETA')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "copiar datos de TTARJETA",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "Eliminamos previa insercion",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"sink": {
+								"type": "ParquetSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "ParquetWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "tTarjeta",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DataSettTarjeta",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "Eliminamos previa insercion",
+						"type": "Delete",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "DataSettTarjeta",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"enableLogging": false,
+							"storeSettings": {
+								"type": "AzureBlobFSReadSettings",
+								"recursive": true,
+								"enablePartitionDiscovery": false
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "bronce"
+				},
+				"annotations": [],
+				"lastPublishTime": "2024-04-24T15:29:42Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ETL_RAW_TTIPODOCUMENTO')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "copiar datos de TTIPODOCUMENTO",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "Eliminamos previa insercion",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"sink": {
+								"type": "ParquetSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "ParquetWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "tTipoDocumento",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DataSetTtipodocumento",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "Eliminamos previa insercion",
+						"type": "Delete",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "DataSetTtipodocumento",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"enableLogging": false,
+							"storeSettings": {
+								"type": "AzureBlobFSReadSettings",
+								"recursive": true,
+								"enablePartitionDiscovery": false
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "bronce"
+				},
+				"annotations": [],
+				"lastPublishTime": "2024-04-24T15:29:42Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ETL_RAW_TVTADETALLE')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "copiar datos de VTADETALLE",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "Eliminamos previa insercion",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderQuery": {
+									"value": "SELECT a.* \nFROM tvtaDetalle a\nINNER JOIN tFactura b on a.nFactura = b.nFactura and a.idprm = b.idprm\nwhere b.Fecha = '@{pipeline().parameters.fechaEjecucion}'",
+									"type": "Expression"
+								},
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"sink": {
+								"type": "ParquetSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "ParquetWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "tvtaDetalle",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DataSetVentaDetalle",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "Eliminamos previa insercion",
+						"type": "Delete",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "DataSetVentaDetalle",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"enableLogging": false,
+							"storeSettings": {
+								"type": "AzureBlobFSReadSettings",
+								"recursive": true,
+								"enablePartitionDiscovery": false
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"fechaEjecucion": {
+						"type": "string",
+						"defaultValue": "2010-01-01"
+					}
+				},
+				"folder": {
+					"name": "bronce"
+				},
+				"annotations": [],
+				"lastPublishTime": "2024-04-24T15:29:42Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ETL_RAW_UBIGEO')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "copiar datos de UBIGEO",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "Eliminamos previa insercion",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"sink": {
+								"type": "ParquetSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "ParquetWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "TUbigeo",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DataSetUbigeo",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "Eliminamos previa insercion",
+						"type": "Delete",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "DataSetUbigeo",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"enableLogging": false,
+							"storeSettings": {
+								"type": "AzureBlobFSReadSettings",
+								"recursive": true,
+								"enablePartitionDiscovery": false
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "bronce"
+				},
+				"annotations": [],
+				"lastPublishTime": "2024-04-24T15:29:42Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DF_CLEAN_ALMACEN')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"folder": {
+					"name": "plata"
+				},
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "DataRawInputAlmacen2",
+								"type": "DatasetReference"
+							},
+							"name": "rawAlmacen"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "DataCleanOutputAlmacen",
+								"type": "DatasetReference"
+							},
+							"name": "cleanAlmacen"
+						}
+					],
+					"transformations": [
+						{
+							"name": "insertbkAlmacen"
+						},
+						{
+							"name": "selectAlmacen"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          nombrepc as string,",
+						"          usuariopc as string,",
+						"          ippc as string,",
+						"          cempresa as string,",
+						"          code as string,",
+						"          calmacen as string,",
+						"          caja as string,",
+						"          activo as integer",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     format: 'parquet') ~> rawAlmacen",
+						"rawAlmacen derive(bk_almacen = trim(caja)) ~> insertbkAlmacen",
+						"insertbkAlmacen select(mapColumn(",
+						"          bk_almacen,",
+						"          des_almacen = calmacen",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> selectAlmacen",
+						"selectAlmacen sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'parquet',",
+						"     truncate: true,",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> cleanAlmacen"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DF_CLEAN_ARTICULO')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"folder": {
+					"name": "plata"
+				},
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "DataRawInputArticulo2",
+								"type": "DatasetReference"
+							},
+							"name": "rawArticulo"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "DataCleanOutputArticulo",
+								"type": "DatasetReference"
+							},
+							"name": "cleanArticulo"
+						}
+					],
+					"transformations": [
+						{
+							"name": "insertbkarticulo"
+						},
+						{
+							"name": "selectArticulo"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          Codarticulo as string,",
+						"          Proveedor as string,",
+						"          Modelo as string,",
+						"          Linea as string,",
+						"          cMaterial as string,",
+						"          color as string,",
+						"          Talla as string,",
+						"          cTaco as string,",
+						"          cmC as string,",
+						"          cmV as string,",
+						"          Descripcion as string,",
+						"          Unidad as string,",
+						"          Stock as integer,",
+						"          StockMin as integer,",
+						"          StockMax as integer,",
+						"          CostoPromedio as integer,",
+						"          Costo as integer,",
+						"          CodPais as integer,",
+						"          CodUbigeo as integer,",
+						"          Exento as integer,",
+						"          Tipo as integer,",
+						"          CodTemporada as integer,",
+						"          Flag as integer,",
+						"          EstadoNuevo as integer,",
+						"          Angurriento as integer,",
+						"          flag1 as integer,",
+						"          cAnno as integer,",
+						"          CodInterno as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: true,",
+						"     ignoreNoFilesFound: false,",
+						"     format: 'parquet') ~> rawArticulo",
+						"rawArticulo derive(bk_articulo = trim(Codarticulo)) ~> insertbkarticulo",
+						"insertbkarticulo select(mapColumn(",
+						"          bk_articulo,",
+						"          Modelo,",
+						"          Linea,",
+						"          color,",
+						"          Descripcion,",
+						"          Unidad,",
+						"          CodInterno",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> selectArticulo",
+						"selectArticulo sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'parquet',",
+						"     truncate: true,",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> cleanArticulo"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DF_CLEAN_CLIENTE')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"folder": {
+					"name": "plata"
+				},
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "DataRawInputCliente2",
+								"type": "DatasetReference"
+							},
+							"name": "rawCliente"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "DataCleanOutputCliente",
+								"type": "DatasetReference"
+							},
+							"name": "cleanCliente"
+						}
+					],
+					"transformations": [
+						{
+							"name": "insertarbkCliente"
+						},
+						{
+							"name": "selectCliente"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          RUC as string,",
+						"          Nombre as string,",
+						"          Direccion as string,",
+						"          Telefono as string,",
+						"          fecnac as timestamp,",
+						"          asesor as integer,",
+						"          ccliente as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     format: 'parquet') ~> rawCliente",
+						"rawCliente derive(bk_cliente = trim(ccliente)) ~> insertarbkCliente",
+						"insertarbkCliente select(mapColumn(",
+						"          bk_cliente,",
+						"          RUC,",
+						"          Nombre,",
+						"          Direccion,",
+						"          Telefono,",
+						"          si_promotor = asesor",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> selectCliente",
+						"selectCliente sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'parquet',",
+						"     truncate: true,",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> cleanCliente"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DF_CLEAN_EMPLEADO')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"folder": {
+					"name": "plata"
+				},
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "DataRawInputEmpleado2",
+								"type": "DatasetReference"
+							},
+							"name": "rawEmpleado"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "DataCleanOutputEmpleado",
+								"type": "DatasetReference"
+							},
+							"name": "cleanEmpleado"
+						}
+					],
+					"transformations": [
+						{
+							"name": "insertamosbk"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          codemp as string,",
+						"          nombre as string,",
+						"          apellidomat as string,",
+						"          apellidopat as string,",
+						"          cvendedor as string,",
+						"          dni as string,",
+						"          mostrar as string,",
+						"          cempresa as string,",
+						"          Lactancia as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     format: 'parquet') ~> rawEmpleado",
+						"rawEmpleado derive(bk_empleado = trim(codemp)) ~> insertamosbk",
+						"insertamosbk sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'parquet',",
+						"     truncate: true,",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> cleanEmpleado"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DF_CLEAN_LOCAL')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"folder": {
+					"name": "plata"
+				},
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "DataRawInputLocal3",
+								"type": "DatasetReference"
+							},
+							"name": "rawLocal"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "DataCleanOutputLocal",
+								"type": "DatasetReference"
+							},
+							"name": "cleanLocal"
+						}
+					],
+					"transformations": [
+						{
+							"name": "insertbkLocal"
+						},
+						{
+							"name": "selectLocal"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          nLocal as string,",
+						"          Descripcion as string,",
+						"          BackTda as string,",
+						"          codubigeo as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     format: 'parquet') ~> rawLocal",
+						"rawLocal derive(bk_local = trim(nLocal)) ~> insertbkLocal",
+						"insertbkLocal select(mapColumn(",
+						"          bk_local,",
+						"          des_local = Descripcion,",
+						"          cod_ubigeo = codubigeo",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> selectLocal",
+						"selectLocal sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'parquet',",
+						"     truncate: true,",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> cleanLocal"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DF_CLEAN_MONEDA')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"folder": {
+					"name": "plata"
+				},
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "DataRowInputMoneda2",
+								"type": "DatasetReference"
+							},
+							"name": "rawMoneda"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "DataCleanOutputMoneda",
+								"type": "DatasetReference"
+							},
+							"name": "cleanMoneda"
+						}
+					],
+					"transformations": [
+						{
+							"name": "insertbkMoneda"
+						},
+						{
+							"name": "selectMoneda"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          cMoneda as string,",
+						"          Descripcion as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     format: 'parquet') ~> rawMoneda",
+						"rawMoneda derive(bk_moneda = trim(cMoneda)) ~> insertbkMoneda",
+						"insertbkMoneda select(mapColumn(",
+						"          bk_moneda,",
+						"          Descripcion",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> selectMoneda",
+						"selectMoneda sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'parquet',",
+						"     truncate: true,",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> cleanMoneda"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DF_CLEAN_TARJETA')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"folder": {
+					"name": "plata"
+				},
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "DataRawInputTarjeta",
+								"type": "DatasetReference"
+							},
+							"name": "rawTarjeta"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "DataCleanOutputTarjeta",
+								"type": "DatasetReference"
+							},
+							"name": "cleanTarjeta"
+						}
+					],
+					"transformations": [
+						{
+							"name": "insertbkTarjeta"
+						},
+						{
+							"name": "selectTarjeta"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          cTarjeta as string,",
+						"          Nombre as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     format: 'parquet') ~> rawTarjeta",
+						"rawTarjeta derive(bk_mediopago = trim(cTarjeta)) ~> insertbkTarjeta",
+						"insertbkTarjeta select(mapColumn(",
+						"          bk_mediopago,",
+						"          des_mediopago = Nombre",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> selectTarjeta",
+						"selectTarjeta sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'parquet',",
+						"     truncate: true,",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> cleanTarjeta"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DF_CLEAN_TIPODOCUMENTO')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"folder": {
+					"name": "plata"
+				},
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "DataRawInputTipoDocumento",
+								"type": "DatasetReference"
+							},
+							"name": "rawTipoDocumento"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "DataCleanOutputTipoDocumento",
+								"type": "DatasetReference"
+							},
+							"name": "cleanTipoDocumento"
+						}
+					],
+					"transformations": [
+						{
+							"name": "insertbkTipoDocumento"
+						},
+						{
+							"name": "selectTipoDocumento"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          Tipo as string,",
+						"          Descripcion as string,",
+						"          DescLarga as string,",
+						"          Modulo as string,",
+						"          F as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     format: 'parquet') ~> rawTipoDocumento",
+						"rawTipoDocumento derive(bk_tipoDocumento = trim(Tipo)) ~> insertbkTipoDocumento",
+						"insertbkTipoDocumento select(mapColumn(",
+						"          bk_tipoDocumento,",
+						"          Descripcion,",
+						"          DescLarga,",
+						"          Modulo",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> selectTipoDocumento",
+						"selectTipoDocumento sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'parquet',",
+						"     truncate: true,",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> cleanTipoDocumento"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DF_CLEAN_UBIGEO')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"folder": {
+					"name": "plata"
+				},
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "DataRawInputUbigeo",
+								"type": "DatasetReference"
+							},
+							"name": "rawUbigeo"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "DataCleanOutputUbigeo",
+								"type": "DatasetReference"
+							},
+							"name": "cleanUbigeo"
+						}
+					],
+					"transformations": [
+						{
+							"name": "insertbkUbigeo"
+						},
+						{
+							"name": "selectUbigeo"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          IDDIST as string,",
+						"          NOMBDEP as string,",
+						"          NOMBPROV as string,",
+						"          NOMBDIST as string,",
+						"          NOMCAPITAL as string,",
+						"          CODREGNAT as string,",
+						"          REGIONNATURAL as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     format: 'parquet') ~> rawUbigeo",
+						"rawUbigeo derive(bk_ubigeo = trim(IDDIST)) ~> insertbkUbigeo",
+						"insertbkUbigeo select(mapColumn(",
+						"          bk_ubigeo,",
+						"          NOMBDEP,",
+						"          NOMBPROV,",
+						"          NOMBDIST,",
+						"          NOMCAPITAL,",
+						"          CODREGNAT,",
+						"          REGIONNATURAL",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> selectUbigeo",
+						"selectUbigeo sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'parquet',",
+						"     truncate: true,",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> cleanUbigeo"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/malla_bronce')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "RAW_TMONEDA",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "Set variable1",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "ETL_RAW_TMONEDA",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "RAW_TTARJETA",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "Set variable1",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "ETL_RAW_TTARJETA",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "RAW_TLOCAL",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "Set variable1",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "ETL_RAW_TLOCAL",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "RAW_TTIPODOCUMENTO",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "Set variable1",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "ETL_RAW_TTIPODOCUMENTO",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "ETL_RAW_TFACTURA",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "RAW_TMONEDA",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "RAW_TTARJETA",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "RAW_TLOCAL",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "RAW_TTIPODOCUMENTO",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "ETL_RAW_TFACTURA",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"fechaEjecucion": {
+									"value": "@variables('fechaProceso')",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "RAW_UBIGEO",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "ETL_RAW_TFACTURA",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "ETL_RAW_UBIGEO",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "RAW_TALMACEN",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "ETL_RAW_TFACTURA",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "ETL_RAW_TALMACEN",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "RAW_PAGOCONTARJETA",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "ETL_RAW_TFACTURA",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "ETL_RAW_PAGOCONTARJETA",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "RAW_TARTICULO",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "RAW_TVTA_DETALLE",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "ETL_RAW_TARTICULO",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "RAW_EMPLEADO",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "ETL_RAW_TFACTURA",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "ETL_RAW_EMPLEADO",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "RAW_TVTA_DETALLE",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "RAW_UBIGEO",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "RAW_TALMACEN",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "RAW_PAGOCONTARJETA",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "RAW_EMPLEADO",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "ETL_RAW_TVTADETALLE",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"fechaEjecucion": {
+									"value": "@variables('fechaProceso')",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "RAW_HORENTRADASALIDA",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "RAW_TVTA_DETALLE",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "ETL_RAW_HORENTRADASALIDA",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"fechaEjecucion": {
+									"value": "@variables('fechaProceso')",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "RAW_TCLIENTE",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "RAW_TVTA_DETALLE",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "ETL_RAW_TCLIENTE",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "Set variable1",
+						"type": "SetVariable",
+						"dependsOn": [],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "fechaProceso",
+							"value": {
+								"value": "@pipeline().parameters.fechaEjecucionMalla",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"fechaEjecucionMalla": {
+						"type": "string"
+					}
+				},
+				"variables": {
+					"fechaProceso": {
+						"type": "String"
+					}
+				},
+				"folder": {
+					"name": "malla"
+				},
+				"annotations": [],
+				"lastPublishTime": "2024-04-22T13:49:09Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/ETL_RAW_TMONEDA')]",
+				"[concat(variables('factoryId'), '/pipelines/ETL_RAW_TTARJETA')]",
+				"[concat(variables('factoryId'), '/pipelines/ETL_RAW_TLOCAL')]",
+				"[concat(variables('factoryId'), '/pipelines/ETL_RAW_TTIPODOCUMENTO')]",
+				"[concat(variables('factoryId'), '/pipelines/ETL_RAW_TFACTURA')]",
+				"[concat(variables('factoryId'), '/pipelines/ETL_RAW_UBIGEO')]",
+				"[concat(variables('factoryId'), '/pipelines/ETL_RAW_TVTADETALLE')]",
+				"[concat(variables('factoryId'), '/pipelines/ETL_RAW_TCLIENTE')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/malla_plata')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Set variable1",
+						"type": "SetVariable",
+						"dependsOn": [],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "fechaProceso",
+							"value": {
+								"value": "@pipeline().parameters.fechaEjecucionMalla",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "DFLOW_UBIGEO",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "Set variable1",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "DF_CLEAN_UBIGEO",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"rawUbigeo": {},
+									"cleanUbigeo": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					},
+					{
+						"name": "DFLOW_CLEAN_EMPLEADO",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "Set variable1",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "DF_CLEAN_EMPLEADO",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"rawEmpleado": {},
+									"cleanEmpleado": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					},
+					{
+						"name": "DFLOW_CLEAN_ALMACEN",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "Set variable1",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "DF_CLEAN_ALMACEN",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"rawAlmacen": {},
+									"cleanAlmacen": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					},
+					{
+						"name": "DFLOW_CLEAN_CLIENTE",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "Set variable1",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "DF_CLEAN_CLIENTE",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"rawCliente": {},
+									"cleanCliente": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					},
+					{
+						"name": "DFLOW_CLEAN_ARTICULO",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "DFLOW_TIPODOCUMENTO",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "DF_CLEAN_ARTICULO",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"rawArticulo": {},
+									"cleanArticulo": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					},
+					{
+						"name": "DFLOW_CLEAN_LOCAL",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "DFLOW_TIPODOCUMENTO",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "DF_CLEAN_LOCAL",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"rawLocal": {},
+									"cleanLocal": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					},
+					{
+						"name": "DFLOW_MONEDA",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "DFLOW_TIPODOCUMENTO",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "DF_CLEAN_MONEDA",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"rawMoneda": {},
+									"cleanMoneda": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					},
+					{
+						"name": "DFLOW_TARJETA",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "DFLOW_TIPODOCUMENTO",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "DF_CLEAN_TARJETA",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"rawTarjeta": {},
+									"cleanTarjeta": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					},
+					{
+						"name": "DFLOW_TIPODOCUMENTO",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "DFLOW_UBIGEO",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "DFLOW_CLEAN_EMPLEADO",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "DFLOW_CLEAN_ALMACEN",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "DFLOW_CLEAN_CLIENTE",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "DF_CLEAN_TIPODOCUMENTO",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"rawTipoDocumento": {},
+									"cleanTipoDocumento": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					},
+					{
+						"name": "DB_ODC_FACTURAS",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "DFLOW_CLEAN_ARTICULO",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "DFLOW_CLEAN_LOCAL",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "CLEAN_ODC_FACTURA",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "DB_ODC_FACTURA_DETALLES",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "DFLOW_MONEDA",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "CLEAN_ODC_DETALLE_FACTURA",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "DB_ODC_ACTIVIDADES",
+						"type": "ExecutePipeline",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
+						"dependsOn": [
+							{
+								"activity": "DFLOW_TARJETA",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "CLEAN_ODC_ACTIVIDADES",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"fechaEjecucionMalla": {
+						"type": "string"
+					}
+				},
+				"variables": {
+					"fechaProceso": {
+						"type": "String"
+					}
+				},
+				"folder": {
+					"name": "malla"
+				},
+				"annotations": [],
+				"lastPublishTime": "2024-05-05T03:46:33Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/DF_CLEAN_UBIGEO')]",
+				"[concat(variables('factoryId'), '/dataflows/DF_CLEAN_EMPLEADO')]",
+				"[concat(variables('factoryId'), '/dataflows/DF_CLEAN_ALMACEN')]",
+				"[concat(variables('factoryId'), '/dataflows/DF_CLEAN_CLIENTE')]",
+				"[concat(variables('factoryId'), '/dataflows/DF_CLEAN_ARTICULO')]",
+				"[concat(variables('factoryId'), '/dataflows/DF_CLEAN_LOCAL')]",
+				"[concat(variables('factoryId'), '/dataflows/DF_CLEAN_MONEDA')]",
+				"[concat(variables('factoryId'), '/dataflows/DF_CLEAN_TARJETA')]",
+				"[concat(variables('factoryId'), '/dataflows/DF_CLEAN_TIPODOCUMENTO')]"
+			]
+		}
+	]
+}

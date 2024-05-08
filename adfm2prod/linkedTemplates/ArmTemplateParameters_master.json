@@ -1,0 +1,39 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "adfm2prod"
+		},
+		"AzureDataLakeStorage1_accountKey": {
+			"value": ""
+		},
+		"AzureDatabricksDM2_accessToken": {
+			"value": ""
+		},
+		"AzureSqlDatabase_connectionString": {
+			"value": ""
+		},
+		"GitHub1_credential": {
+			"value": ""
+		},
+		"SingleStoreConnection_connectionString": {
+			"value": ""
+		},
+		"AzureDataLakeStorage1_properties_typeProperties_url": {
+			"value": "https://stm2datalake001.dfs.core.windows.net/"
+		},
+		"AzureDatabricksDM2_properties_typeProperties_existingClusterId": {
+			"value": "0501-071308-en8j4x3v"
+		},
+		"GitHub1_properties_typeProperties_username": {
+			"value": "onirosd"
+		},
+		"containerUri": {
+			"value": ""
+		},
+		"containerSasToken": {
+			"value": ""
+		}
+	}
+}

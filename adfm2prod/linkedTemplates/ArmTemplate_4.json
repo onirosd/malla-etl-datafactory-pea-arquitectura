@@ -1,0 +1,187 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Nombre de instancia de Data Factory",
+			"defaultValue": "adfm2prod"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/malla_principal')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "obtenemosFechas",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderQuery": "select CONVERT(varchar, fechaEjecucion, 23) as fechaEjecucion \nfrom tMallaEjecuciones where estado = 1\norder by fechaEjecucion asc",
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"dataset": {
+								"referenceName": "tMallaEjecuciones",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"firstRowOnly": false
+						}
+					},
+					{
+						"name": "guardamosFecha",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "obtenemosFechas",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "fechasProcesos",
+							"value": {
+								"value": "@activity('obtenemosFechas').output.value\n\n",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "Bucle de ejecucion de mallas",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "guardamosFecha",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@variables('fechasProcesos')",
+								"type": "Expression"
+							},
+							"isSequential": true,
+							"activities": [
+								{
+									"name": "malla bronce data",
+									"type": "ExecutePipeline",
+									"dependsOn": [],
+									"policy": {
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "malla_bronce",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"fechaEjecucionMalla": {
+												"value": "@item().fechaEjecucion",
+												"type": "Expression"
+											}
+										}
+									}
+								},
+								{
+									"name": "malla plata data",
+									"type": "ExecutePipeline",
+									"dependsOn": [
+										{
+											"activity": "malla bronce data",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "malla_plata",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"fechaEjecucionMalla": {
+												"value": "@item().fechaEjecucion",
+												"type": "Expression"
+											}
+										}
+									}
+								},
+								{
+									"name": "malla oro data",
+									"type": "ExecutePipeline",
+									"dependsOn": [
+										{
+											"activity": "malla plata data",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "malla_oro",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {}
+									}
+								}
+							]
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"variables": {
+					"fechasProcesos": {
+						"type": "Array"
+					}
+				},
+				"folder": {
+					"name": "orquestador"
+				},
+				"annotations": [],
+				"lastPublishTime": "2024-05-06T04:36:38Z"
+			},
+			"dependsOn": []
+		}
+	]
+}

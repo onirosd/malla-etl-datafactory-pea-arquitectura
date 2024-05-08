@@ -1,0 +1,1551 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Nombre de instancia de Data Factory",
+			"defaultValue": "adfm2prod"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/TUbigeo')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "bronce/input datasets/sources databases"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "UBIGEO 2022_1891 distritos.csv",
+						"folderPath": "sistema-reniec",
+						"fileSystem": "sources"
+					},
+					"columnDelimiter": ";",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "IDDIST",
+						"type": "String"
+					},
+					{
+						"name": "NOMBDEP",
+						"type": "String"
+					},
+					{
+						"name": "NOMBPROV",
+						"type": "String"
+					},
+					{
+						"name": "NOMBDIST",
+						"type": "String"
+					},
+					{
+						"name": "NOMCAPITAL",
+						"type": "String"
+					},
+					{
+						"name": "CODREGNAT",
+						"type": "String"
+					},
+					{
+						"name": "REGIONNATURAL",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/bd_control_asistencias')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "bronce/input datasets/sources files"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "CSV DE REGISTRO DE INGRESOS Y SALIDAS.csv",
+						"folderPath": "sistema-control-horas",
+						"fileSystem": "sources"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "002;05;07524141;NULL;2015-04-10 00:00:00.000;10:54:45;NULL;NULL;22:07:45;V",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/tAlmacen')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "bronce/input datasets/sources databases"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "nombrepc",
+						"type": "varchar"
+					},
+					{
+						"name": "usuariopc",
+						"type": "varchar"
+					},
+					{
+						"name": "ippc",
+						"type": "varchar"
+					},
+					{
+						"name": "cempresa",
+						"type": "varchar"
+					},
+					{
+						"name": "code",
+						"type": "varchar"
+					},
+					{
+						"name": "calmacen",
+						"type": "varchar"
+					},
+					{
+						"name": "caja",
+						"type": "varchar"
+					},
+					{
+						"name": "activo",
+						"type": "int",
+						"precision": 10
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "tusertsrvw"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/tArticulo')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "bronce/input datasets/sources databases"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "Codarticulo",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Proveedor",
+						"type": "varchar"
+					},
+					{
+						"name": "Modelo",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Linea",
+						"type": "nvarchar"
+					},
+					{
+						"name": "cMaterial",
+						"type": "varchar"
+					},
+					{
+						"name": "color",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Talla",
+						"type": "varchar"
+					},
+					{
+						"name": "cTaco",
+						"type": "varchar"
+					},
+					{
+						"name": "cmC",
+						"type": "varchar"
+					},
+					{
+						"name": "cmV",
+						"type": "varchar"
+					},
+					{
+						"name": "Descripcion",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Unidad",
+						"type": "varchar"
+					},
+					{
+						"name": "Stock",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "StockMin",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "StockMax",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "CostoPromedio",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "Costo",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "CodPais",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "CodUbigeo",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "Exento",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "Tipo",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "CodTemporada",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "Flag",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "EstadoNuevo",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "Angurriento",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "flag1",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "cAnno",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "CodInterno",
+						"type": "nvarchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "tArticuloT"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/tCliente')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "bronce/input datasets/sources databases"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "RUC",
+						"type": "varchar"
+					},
+					{
+						"name": "Nombre",
+						"type": "varchar"
+					},
+					{
+						"name": "Direccion",
+						"type": "varchar"
+					},
+					{
+						"name": "Telefono",
+						"type": "varchar"
+					},
+					{
+						"name": "fecnac",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "asesor",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "ccliente",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "tCLiente"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/tEmpleado')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "bronce/input datasets/sources databases"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "codemp",
+						"type": "varchar"
+					},
+					{
+						"name": "nombre",
+						"type": "varchar"
+					},
+					{
+						"name": "apellidomat",
+						"type": "varchar"
+					},
+					{
+						"name": "apellidopat",
+						"type": "varchar"
+					},
+					{
+						"name": "cvendedor",
+						"type": "varchar"
+					},
+					{
+						"name": "dni",
+						"type": "varchar"
+					},
+					{
+						"name": "mostrar",
+						"type": "varchar"
+					},
+					{
+						"name": "cempresa",
+						"type": "varchar"
+					},
+					{
+						"name": "Lactancia",
+						"type": "char"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "tEmpleado"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/tFactura')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "bronce/input datasets/sources databases"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "Tipo",
+						"type": "varchar"
+					},
+					{
+						"name": "cCliente",
+						"type": "varchar"
+					},
+					{
+						"name": "nFactura",
+						"type": "bigint",
+						"precision": 19
+					},
+					{
+						"name": "cMoneda",
+						"type": "char"
+					},
+					{
+						"name": "Fecha",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "Estado",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "Paridad",
+						"type": "decimal",
+						"precision": 10,
+						"scale": 3
+					},
+					{
+						"name": "SubTotal",
+						"type": "decimal",
+						"precision": 8,
+						"scale": 2
+					},
+					{
+						"name": "IGV",
+						"type": "decimal",
+						"precision": 8,
+						"scale": 2
+					},
+					{
+						"name": "Total",
+						"type": "decimal",
+						"precision": 8,
+						"scale": 2
+					},
+					{
+						"name": "Referencia",
+						"type": "char"
+					},
+					{
+						"name": "CodVendedor",
+						"type": "varchar"
+					},
+					{
+						"name": "CodOperador",
+						"type": "char"
+					},
+					{
+						"name": "Vencimiento",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "Recargo",
+						"type": "decimal",
+						"precision": 8,
+						"scale": 2
+					},
+					{
+						"name": "Descuento",
+						"type": "decimal",
+						"precision": 8,
+						"scale": 2
+					},
+					{
+						"name": "Exonerado",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 3
+					},
+					{
+						"name": "cAlmacen",
+						"type": "varchar"
+					},
+					{
+						"name": "nLista",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "Hora",
+						"type": "char"
+					},
+					{
+						"name": "ES",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 3
+					},
+					{
+						"name": "ED",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 3
+					},
+					{
+						"name": "TS",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 3
+					},
+					{
+						"name": "TD",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 3
+					},
+					{
+						"name": "TipoTarjeta",
+						"type": "varchar"
+					},
+					{
+						"name": "nTarjeta",
+						"type": "varchar"
+					},
+					{
+						"name": "VS",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 3
+					},
+					{
+						"name": "VD",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 3
+					},
+					{
+						"name": "Caja",
+						"type": "char"
+					},
+					{
+						"name": "CierreZ",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "FechaZ",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "cColegio",
+						"type": "char"
+					},
+					{
+						"name": "RUC",
+						"type": "varchar"
+					},
+					{
+						"name": "Seriereferencia",
+						"type": "varchar"
+					},
+					{
+						"name": "Tiporeferencia",
+						"type": "varchar"
+					},
+					{
+						"name": "Numreferencia",
+						"type": "bigint",
+						"precision": 19
+					},
+					{
+						"name": "ENC",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 3
+					},
+					{
+						"name": "DNI",
+						"type": "char"
+					},
+					{
+						"name": "idprm",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "tFactura"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/tHorEntradaSalida')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "bronce/input datasets/sources databases"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "CodEmpresa",
+						"type": "varchar"
+					},
+					{
+						"name": "CodLocal",
+						"type": "varchar"
+					},
+					{
+						"name": "CodEmpleado",
+						"type": "varchar"
+					},
+					{
+						"name": "Secuencial",
+						"type": "varchar"
+					},
+					{
+						"name": "Fecha",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "HorIngreso",
+						"type": "varchar"
+					},
+					{
+						"name": "HorSalidaR",
+						"type": "varchar"
+					},
+					{
+						"name": "HorIngresoR",
+						"type": "varchar"
+					},
+					{
+						"name": "HorSalida",
+						"type": "varchar"
+					},
+					{
+						"name": "FApoyo",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "HorEntradaSalida"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/tLocal')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "bronce/input datasets/sources databases"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "nLocal",
+						"type": "varchar"
+					},
+					{
+						"name": "Descripcion",
+						"type": "varchar"
+					},
+					{
+						"name": "BackTda",
+						"type": "char"
+					},
+					{
+						"name": "codubigeo",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "tLocal"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/tMallaEjecuciones')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "bronce/input datasets/source mallas"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "fechaEjecucion",
+						"type": "varchar"
+					},
+					{
+						"name": "estado",
+						"type": "int",
+						"precision": 10
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "tMallaEjecuciones"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/tMoneda')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "bronce/input datasets/sources databases"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "cMoneda",
+						"type": "char"
+					},
+					{
+						"name": "Descripcion",
+						"type": "char"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "tMoneda"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/tPagoConTarjetas')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "bronce/input datasets/sources databases"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "tipo",
+						"type": "varchar"
+					},
+					{
+						"name": "nfactura",
+						"type": "bigint",
+						"precision": 19
+					},
+					{
+						"name": "cTarjeta",
+						"type": "varchar"
+					},
+					{
+						"name": "nTarjeta",
+						"type": "varchar"
+					},
+					{
+						"name": "monto",
+						"type": "decimal",
+						"precision": 9,
+						"scale": 2
+					},
+					{
+						"name": "idprm",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "tPagoConTarjetas"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/tTarjeta')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "bronce/input datasets/sources databases"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "tTarjeta"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/tTipoDocumento')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "bronce/input datasets/sources databases"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "Tipo",
+						"type": "char"
+					},
+					{
+						"name": "Descripcion",
+						"type": "char"
+					},
+					{
+						"name": "DescLarga",
+						"type": "varchar"
+					},
+					{
+						"name": "Modulo",
+						"type": "char"
+					},
+					{
+						"name": "F",
+						"type": "char"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "tTipoDocumento"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/tvtaDetalle')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "bronce/input datasets/sources databases"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "Tipo",
+						"type": "char"
+					},
+					{
+						"name": "nFactura",
+						"type": "bigint",
+						"precision": 19
+					},
+					{
+						"name": "CodArticulo",
+						"type": "varchar"
+					},
+					{
+						"name": "Linea",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "Descripcion",
+						"type": "char"
+					},
+					{
+						"name": "Cantidad",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "PUnitario",
+						"type": "decimal",
+						"precision": 8,
+						"scale": 2
+					},
+					{
+						"name": "ValorVenta",
+						"type": "decimal",
+						"precision": 8,
+						"scale": 2
+					},
+					{
+						"name": "cAlmacen",
+						"type": "varchar"
+					},
+					{
+						"name": "Caja",
+						"type": "char"
+					},
+					{
+						"name": "Cant_nc",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "lineaprocedencia",
+						"type": "char"
+					},
+					{
+						"name": "idprm",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "tvtaDetalle"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ETL_RAW_EMPLEADO')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "copiar datos de TEMPLEADO",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "Eliminamos previa insercion",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"sink": {
+								"type": "ParquetSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "ParquetWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "tEmpleado",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DataSettEmpleado",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "Eliminamos previa insercion",
+						"type": "Delete",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "DataSettEmpleado",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"enableLogging": false,
+							"storeSettings": {
+								"type": "AzureBlobFSReadSettings",
+								"recursive": true,
+								"enablePartitionDiscovery": false
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "bronce"
+				},
+				"annotations": [],
+				"lastPublishTime": "2024-04-24T15:29:42Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/tEmpleado')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ETL_RAW_HORENTRADASALIDA')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "copiar datos de HORENTRADASALIDA",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "Eliminamos previa insercion",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderQuery": {
+									"value": "select * from HorEntradaSalida where Fecha = '@{pipeline().parameters.fechaEjecucion}'",
+									"type": "Expression"
+								},
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"sink": {
+								"type": "ParquetSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "ParquetWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "tHorEntradaSalida",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DataSetHorEntradaSalida",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "Eliminamos previa insercion",
+						"type": "Delete",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "DataSetHorEntradaSalida",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"enableLogging": false,
+							"storeSettings": {
+								"type": "AzureBlobFSReadSettings",
+								"recursive": true,
+								"enablePartitionDiscovery": false
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"fechaEjecucion": {
+						"type": "string"
+					}
+				},
+				"folder": {
+					"name": "bronce"
+				},
+				"annotations": [],
+				"lastPublishTime": "2024-04-24T15:29:42Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/tHorEntradaSalida')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ETL_RAW_PAGOCONTARJETA')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "copiar datos de PAGOCONTARJETA",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "Eliminamos previa insercion",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"sink": {
+								"type": "ParquetSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "ParquetWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "tPagoConTarjetas",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DataSettPagocontarjetas",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "Eliminamos previa insercion",
+						"type": "Delete",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "DataSettPagocontarjetas",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"enableLogging": false,
+							"storeSettings": {
+								"type": "AzureBlobFSReadSettings",
+								"recursive": true,
+								"enablePartitionDiscovery": false
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "bronce"
+				},
+				"annotations": [],
+				"lastPublishTime": "2024-04-24T15:29:42Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/tPagoConTarjetas')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ETL_RAW_TALMACEN')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "copiar datos de TALMACEN",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "Eliminamos previa insercion",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"sink": {
+								"type": "ParquetSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "ParquetWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "tAlmacen",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DataSettAlmacen",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "Eliminamos previa insercion",
+						"type": "Delete",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "DataSettAlmacen",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"enableLogging": false,
+							"storeSettings": {
+								"type": "AzureBlobFSReadSettings",
+								"recursive": true,
+								"enablePartitionDiscovery": false
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "bronce"
+				},
+				"annotations": [],
+				"lastPublishTime": "2024-04-24T15:29:42Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/tAlmacen')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ETL_RAW_TARTICULO')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "copiar datos de TTARTICULO",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "Eliminamos previa insercion",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"sink": {
+								"type": "ParquetSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "ParquetWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "tArticulo",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DataSetArticulo",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "Eliminamos previa insercion",
+						"type": "Delete",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "DataSetArticulo",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"enableLogging": false,
+							"storeSettings": {
+								"type": "AzureBlobFSReadSettings",
+								"recursive": true,
+								"enablePartitionDiscovery": false
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "bronce"
+				},
+				"annotations": [],
+				"lastPublishTime": "2024-04-24T15:29:42Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/tArticulo')]"
+			]
+		}
+	]
+}
